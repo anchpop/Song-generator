@@ -1,4 +1,6 @@
 from nltk import *
+from nltk.tokenize import WhitespaceTokenizer
+Wstknzr = WhitespaceTokenizer()
 song = """
 Ramos's fight, he was whipping vines,
 swinging all through Coumarine
@@ -74,6 +76,8 @@ You know I've been, I've been losing sleep,
 dreaming of Kalos and its new cities
 Chaining shinies, looking for those stars
 and no more counting EVs, we're Super Training hard
-"""
+""".lower()
 
-print(word_tokenize(song))
+tokens = song.split()
+for i in tokens:
+    print(i)
