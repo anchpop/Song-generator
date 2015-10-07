@@ -76,8 +76,12 @@ You know I've been, I've been losing sleep,
 dreaming of Kalos and its new cities
 Chaining shinies, looking for those stars
 and no more counting EVs, we're Super Training hard
-""".lower()
+"""
 
-tokens = song.split()
+lines = song.split("\n")
+tokens = []
+for i in lines:
+    if i.split() != []:
+        tokens += [i.split()]
 for i in tokens:
     print(i)
