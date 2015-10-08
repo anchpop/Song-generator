@@ -167,6 +167,12 @@ for i in lines:
         tokens += [i.split()]
 for line in tokens:
     for wordnum, word in enumerate(line):
+        if wordnum == 0:
+            if markov.get('\n', False):
+                markov['\n'][word] += 1
+            else:
+                markov['\n'] = Counter()
+                markov['\n'][word] += 1
         if (wordnum + 1) < len(line):
             if markov.get(word, False):
                 markov[word][line[wordnum+1]] += 1
@@ -189,11 +195,11 @@ def getRandomItemInDict(markov):
 
 curr = getRandomItemInDict(markov)
 print(curr)
-for i in range(0, 4000):
+for i in range(0, 1000):
     curr = getRandomItemInCounter(markov, curr)
     if curr == '\n':
         print('')
-        curr = getRandomItemInDict(markov)
+        curr = getRandomItemInCounter(markov, '\n')
         print(curr)
     else:
         print(curr + " ", end="")
