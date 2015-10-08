@@ -1,6 +1,8 @@
 from nltk import *
-from nltk.tokenize import WhitespaceTokenizer
-Wstknzr = WhitespaceTokenizer()
+from collections import *
+import itertools
+import random
+
 song = """
 Ramos's fight, he was whipping vines,
 swinging all through Coumarine
@@ -77,11 +79,29 @@ dreaming of Kalos and its new cities
 Chaining shinies, looking for those stars
 and no more counting EVs, we're Super Training hard
 """
+markov = {}
 
 lines = song.split("\n")
 tokens = []
 for i in lines:
     if i.split() != []:
         tokens += [i.split()]
-for i in tokens:
-    print(i)
+for line in tokens:
+    for wordnum, word in enumerate(line):
+        if (wordnum + 1) < len(line):
+            print(word)
+            if markov.get(word, False):
+                print(markov[word])
+                markov[word][line[wordnum+1]] += 1
+            else:
+                markov[word] = Counter()
+                markov[word][line[wordnum+1]] += 1
+        else:
+            if markov.get(word, False):
+                markov[word]['\n'] += 1
+            else:
+                markov[word] = Counter()
+                markov[word]['\n'] += 1
+
+print(markov)
+
