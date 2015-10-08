@@ -200,7 +200,7 @@ for i in range(0, 1000):
     if curr == '\n':
         print('')
         curr = getRandomItemInCounter(markov, '\n')
-        print(curr)
+        print(curr, end="")
     else:
         print(curr + " ", end="")
     
