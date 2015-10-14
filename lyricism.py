@@ -5,32 +5,31 @@ import random
 
 song = open('song.txt', 'r').read()
 markov = {}
+level = 1
 
 lines = song.split("\n")
 tokens = []
+
+def makemarkov(tokens, level):
+    markov = {}
+    for index, word in enumerate(tokens):
+        if index < level:
+            continue;
+        else:
+            toenter = tuple(tokens[index-level:index])
+            if markov.get(toenter, False):
+                markov[toenter][word] += 1
+            else:
+                markov[toenter] = Counter()
+                markov[toenter][word] += 1
+    return markov
+
 for i in lines:
     if i.split() != []:
         tokens += [i.split()]
-for line in tokens:
-    for wordnum, word in enumerate(line):
-        if wordnum == 0:
-            if markov.get('\n', False):
-                markov['\n'][word] += 1
-            else:
-                markov['\n'] = Counter()
-                markov['\n'][word] += 1
-        if (wordnum + 1) < len(line):
-            if markov.get(word, False):
-                markov[word][line[wordnum+1]] += 1
-            else:
-                markov[word] = Counter()
-                markov[word][line[wordnum+1]] += 1
-        else:
-            if markov.get(word, False):
-                markov[word]['\n'] += 1
-            else:
-                markov[word] = Counter()
-                markov[word]['\n'] += 1
+        
+markov = makemarkov(tokens, level)
+
 
 def getRandomItemInCounter(markov, word):
     i = random.randrange(sum(markov[word].values()))
