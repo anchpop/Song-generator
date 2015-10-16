@@ -6,13 +6,13 @@ from random import *
 
 song = open('song.txt', 'r').read()
 markov = {}
-level = 2
+level = 1
 
 lines = song.split("\n")
 tokens = []
 
 
-for i in lines:              #generate list of words
+for i in lines:                                           #generate list of words
     if i.split() != []:
         tokens += i.split()
         
@@ -23,9 +23,9 @@ def makeStrAlphanumeric(inp):
 def makeListAlphanumeric(inp):
     return map((lambda x: makeStrAlphanumeric(x), inp))
 
-def makemarkov(tokens, level):
-    markov = {}
-    for index, word in enumerate(tokens):
+def makemarkov(tokens, level):                            #generates a dictionary in the style of {tuple: Counter} 
+    markov = {}                                           #where tuple is the current state and the counter is the words that the state follows
+    for index, word in enumerate(tokens):               
         if index < level:
             continue;
         else:
@@ -42,19 +42,20 @@ def makemarkov(tokens, level):
 markov = makemarkov(tokens, level)
 
 
-def getRandomItemInCounter(markov, word):
-    i = randrange(sum(markov[word].values()))
-    return next(itertools.islice(markov[word].elements(), i, None))
+def getRandomItemInCounter(markov, state):                #takes a state in the chain and gives you a random word that can come after it
+    i = randrange(sum(markov[state].values()))
+    return next(itertools.islice(markov[state].elements(), i, None))
 
-def getRandomItemInDict(markov):
-    return choice(list(markov.keys()))
+def getRandomItemInDict(markov, level):                   #gives a ranom possible state
+    startWordIndex = randint(0, len(tokens)-level)
+    state = []
+    for i in range(level):
+        state += [tokens[startWordIndex + i]]
+    return state
 
 def getText(length):
     result = ""
-    startWordIndex = randint(0, len(tokens)-level)
-    currstate = []
-    for i in range(level):
-        currstate += [tokens[startWordIndex + i]]
+    currstate = getRandomItemInDict(markov, level)
     for i in range(0, length):
         currstate += [getRandomItemInCounter(markov, tuple(currstate))]
         currstate = currstate[1:]
