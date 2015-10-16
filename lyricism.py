@@ -1,14 +1,27 @@
 from nltk import *
 from collections import *
+import string, re
 import itertools
-import random
+from random import *
 
 song = open('song.txt', 'r').read()
 markov = {}
-level = 1
+level = 2
 
 lines = song.split("\n")
 tokens = []
+
+
+for i in lines:              #generate list of words
+    if i.split() != []:
+        tokens += i.split()
+        
+
+def makeStrAlphanumeric(inp):
+    return re.sub(r'[a-zA-Z ]+', '', inp)
+
+def makeListAlphanumeric(inp):
+    return map((lambda x: makeStrAlphanumeric(x), inp))
 
 def makemarkov(tokens, level):
     markov = {}
@@ -16,7 +29,8 @@ def makemarkov(tokens, level):
         if index < level:
             continue;
         else:
-            toenter = tuple(tokens[index-level:index])
+            toenter = tokens[index-level:index]
+            toenter = tuple(toenter)
             if markov.get(toenter, False):
                 markov[toenter][word] += 1
             else:
@@ -24,28 +38,30 @@ def makemarkov(tokens, level):
                 markov[toenter][word] += 1
     return markov
 
-for i in lines:
-    if i.split() != []:
-        tokens += [i.split()]
         
 markov = makemarkov(tokens, level)
 
 
 def getRandomItemInCounter(markov, word):
-    i = random.randrange(sum(markov[word].values()))
+    i = randrange(sum(markov[word].values()))
     return next(itertools.islice(markov[word].elements(), i, None))
 
 def getRandomItemInDict(markov):
-    return random.choice(list(markov.keys()))
+    return choice(list(markov.keys()))
 
-curr = getRandomItemInDict(markov)
-print(curr)
-for i in range(0, 1000):
-    curr = getRandomItemInCounter(markov, curr)
-    if curr == '\n':
-        print('')
-        curr = getRandomItemInCounter(markov, '\n')
-        print(curr + " ", end="")
-    else:
-        print(curr + " ", end="")
+def getText(length):
+    result = ""
+    startWordIndex = randint(0, len(tokens)-level)
+    currstate = []
+    for i in range(level):
+        currstate += [tokens[startWordIndex + i]]
+    for i in range(0, length):
+        currstate += [getRandomItemInCounter(markov, tuple(currstate))]
+        currstate = currstate[1:]
+              
+        result += currstate[0] + " "
+    return result
+
+print(getText(1000))
+
     
