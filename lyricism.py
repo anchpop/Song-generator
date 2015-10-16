@@ -6,7 +6,7 @@ from random import *
 
 song = open('song.txt', 'r').read()
 markov = {}
-level = 1
+level = 2
 
 lines = song.split("\n")
 tokens = []
